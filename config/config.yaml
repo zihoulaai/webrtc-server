@@ -1,0 +1,9 @@
+server:
+  http_port: "8080"
+
+turn:
+  address: ":3478"
+  realm: "webrtc-server"
+  username: "user"
+  password: "password"
+  public_ip: "" # 留空自动检测
