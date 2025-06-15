@@ -6,7 +6,7 @@ import (
 	"net"
 	"sync"
 
-	"github.com/pion/turn/v2"
+	"github.com/pion/turn/v4"
 	"webrtc-server/pkg/webrtcutil"
 )
 
@@ -23,6 +23,12 @@ func NewServer() (*Server, error) {
 		return nil, fmt.Errorf("failed to create TURN listener: %w", err)
 	}
 
+	// 创建 TCP 监听器
+	tcpListener, err := net.Listen("tcp", config.Turn.Address)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create TCP listener: %w", err)
+	}
+
 	server, err := turn.NewServer(turn.ServerConfig{
 		Realm: config.Turn.Realm,
 		AuthHandler: func(username, realm string, srcAddr net.Addr) ([]byte, bool) {
@@ -34,6 +40,15 @@ func NewServer() (*Server, error) {
 		PacketConnConfigs: []turn.PacketConnConfig{
 			{
 				PacketConn: udpListener,
+				RelayAddressGenerator: &turn.RelayAddressGeneratorStatic{
+					RelayAddress: net.ParseIP(config.Turn.PublicIP),
+					Address:      "0.0.0.0",
+				},
+			},
+		},
+		ListenerConfigs: []turn.ListenerConfig{
+			{
+				Listener: tcpListener,
 				RelayAddressGenerator: &turn.RelayAddressGeneratorStatic{
 					RelayAddress: net.ParseIP(config.Turn.PublicIP),
 					Address:      "0.0.0.0",
