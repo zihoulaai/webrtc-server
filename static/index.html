@@ -3,51 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebRTC Server</title>
+  <title>WebRTC Video Call</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 <div class="container">
-  <h1>WebRTC Communication Server</h1>
+  <h1>WebRTC Video Call</h1>
+
+  <div id="permission-prompt" class="panel hidden">
+    <h2>Permission Required</h2>
+    <p>Please allow access to your camera and microphone to use this application.</p>
+    <button id="request-permission">Allow Access</button>
+    <p>Or try <button id="screen-share">Screen Sharing</button> instead.</p>
+  </div>
 
   <div class="panel">
     <h2>Your Connection</h2>
     <div id="local-info">
       <p><strong>Status:</strong> <span id="status">Connecting...</span></p>
       <p><strong>Your ID:</strong> <span id="peer-id">-</span></p>
-      <p><strong>Local IP:</strong> <span id="local-ip">Detecting...</span></p>
+      <div id="device-selection">
+        <label for="video-device">Camera:</label>
+        <select id="video-device"></select>
+        <label for="audio-device">Microphone:</label>
+        <select id="audio-device"></select>
+        <button id="refresh-devices">Refresh</button>
+      </div>
     </div>
   </div>
 
   <div class="panel">
-    <h2>Connected Clients <button id="refresh-clients">Refresh</button></h2>
+    <h2>Connected Clients</h2>
     <div id="clients-list">Loading clients...</div>
   </div>
 
   <div class="panel">
-    <h2>WebRTC Connection</h2>
+    <h2>Video Call</h2>
     <div class="controls">
       <select id="target-peer">
         <option value="">Select a peer</option>
       </select>
       <button id="start-call" disabled>Start Call</button>
       <button id="end-call" disabled>End Call</button>
+      <button id="toggle-camera">Toggle Camera</button>
+      <button id="toggle-mic">Toggle Microphone</button>
     </div>
 
     <div class="video-container">
       <div class="video-box">
-        <h3>Local Video</h3>
+        <h3>You</h3>
         <video id="local-video" autoplay playsinline muted></video>
       </div>
       <div class="video-box">
-        <h3>Remote Video</h3>
+        <h3>Remote</h3>
         <video id="remote-video" autoplay playsinline></video>
       </div>
     </div>
 
-    <div class="connection-info">
-      <p><strong>ICE Connection State:</strong> <span id="ice-state">-</span></p>
-      <p><strong>Signaling State:</strong> <span id="signal-state">-</span></p>
+    <div class="status-grid">
+      <div class="status-item">
+        <span>ICE State:</span>
+        <span id="ice-state">-</span>
+      </div>
+      <div class="status-item">
+        <span>Local Tracks:</span>
+        <span id="local-tracks">0</span>
+      </div>
+      <div class="status-item">
+        <span>Remote Tracks:</span>
+        <span id="remote-tracks">0</span>
+      </div>
+      <div class="status-item">
+        <span>Connection:</span>
+        <span id="connection-state">-</span>
+      </div>
     </div>
   </div>
 </div>

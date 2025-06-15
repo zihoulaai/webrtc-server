@@ -29,11 +29,6 @@ body {
   padding: 0 15px;
 }
 
-h1, h2, h3 {
-  margin-bottom: 20px;
-  color: var(--dark-text);
-}
-
 h1 {
   text-align: center;
   padding-bottom: 15px;
@@ -49,12 +44,16 @@ h1 {
   margin-bottom: 30px;
 }
 
+.hidden {
+  display: none;
+}
+
 .controls {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 25px;
   align-items: center;
-  flex-wrap: wrap;
 }
 
 button {
@@ -83,23 +82,11 @@ button:disabled {
   box-shadow: none;
 }
 
-#refresh-clients {
-  background-color: #95a5a6;
-  padding: 6px 12px;
-  font-size: 14px;
-}
-
-#refresh-clients:hover {
-  background-color: #7f8c8d;
-}
-
 select {
-  padding: 10px 15px;
+  padding: 10px;
   border-radius: 6px;
   border: 1px solid var(--border-color);
   flex-grow: 1;
-  font-size: 15px;
-  background-color: var(--light-bg);
 }
 
 .video-container {
@@ -132,21 +119,29 @@ video {
   background-color: #000;
 }
 
-#local-info, .connection-info {
+#local-info, .status-grid {
   background-color: var(--light-bg);
   padding: 15px;
   border-radius: 6px;
   margin-top: 15px;
 }
 
-#local-info p, .connection-info p {
+#local-info p {
   margin: 8px 0;
-  display: flex;
 }
 
-#local-info strong, .connection-info strong {
-  display: inline-block;
-  width: 160px;
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 4px;
 }
 
 #clients-list ul {
@@ -160,7 +155,7 @@ video {
 
 #clients-list li {
   padding: 12px;
-  background: var(--light-bg);
+  background: #f8f9fa;
   border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   transition: all 0.2s;
@@ -172,6 +167,14 @@ video {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
+#device-selection {
+  margin-top: 15px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
 @media (max-width: 768px) {
   .video-container {
     flex-direction: column;
@@ -180,5 +183,9 @@ video {
   .controls {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  #device-selection {
+    grid-template-columns: 1fr;
   }
 }
