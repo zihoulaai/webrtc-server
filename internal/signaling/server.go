@@ -42,7 +42,7 @@ func (s *Server) removePeer(peerID string) {
 	defer s.peersLock.Unlock()
 
 	if peer, exists := s.peers[peerID]; exists {
-		peer.Conn.Close()
+		_ = peer.Conn.Close()
 		delete(s.peers, peerID)
 		log.Printf("Peer disconnected: %s", peerID)
 		s.broadcastClientList()

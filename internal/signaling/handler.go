@@ -36,10 +36,13 @@ func (s *Server) HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Peer connected: %s", peerID)
 
 	// 发送分配的ID给客户端
-	peer.Send(Message{
+	err = peer.Send(Message{
 		Type: "id",
 		Data: peerID,
 	})
+	if err != nil {
+		return
+	}
 
 	// 通知所有客户端有新的连接
 	s.broadcastClientList()
@@ -70,16 +73,22 @@ func (s *Server) handlePeerMessages(peer *Peer) {
 		s.peersLock.RUnlock()
 
 		if exists {
-			targetPeer.Send(msg)
+			err := targetPeer.Send(msg)
+			if err != nil {
+				return
+			}
 		} else if msg.To == "" {
 			log.Printf("Broadcasting message from %s: %s", peer.ID, msg.Type)
 			s.broadcast(peer.ID, msg)
 		} else {
 			log.Printf("Target peer not found: %s", msg.To)
-			peer.Send(Message{
+			err := peer.Send(Message{
 				Type: "error",
 				Data: fmt.Sprintf("Peer %s not found", msg.To),
 			})
+			if err != nil {
+				return
+			}
 		}
 	}
 }
@@ -92,7 +101,10 @@ func (s *Server) broadcast(senderID string, msg Message) {
 		if id == senderID {
 			continue
 		}
-		peer.Send(msg)
+		err := peer.Send(msg)
+		if err != nil {
+			return
+		}
 	}
 }
 
@@ -110,5 +122,8 @@ func (s *Server) ListClientsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(clients)
+	err := json.NewEncoder(w).Encode(clients)
+	if err != nil {
+		return
+	}
 }
