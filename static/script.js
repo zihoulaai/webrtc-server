@@ -62,11 +62,12 @@ class WebRTCClient {
   }
 
   checkBrowserSupport() {
-    return [
-      'mediaDevices' in navigator,
-      'getUserMedia' in navigator.mediaDevices,
+    return (
+      'mediaDevices' in navigator &&
+      navigator.mediaDevices &&
+      'getUserMedia' in navigator.mediaDevices &&
       'RTCPeerConnection' in window
-    ].every(Boolean);
+    );
   }
 
   showUnsupportedMessage() {
